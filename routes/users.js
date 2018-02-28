@@ -1,35 +1,40 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const mongoose = require('mongoose');
 
 function loadUserFromParams(req, res, next) {
-    Person.findById(req.params.id).exec(function(err, user) {
-        if (err) {
-            return next(err);
-        } else if (!user) {
-            return res.status(404).send('No person found with ID ' + req.params.id);
-        }
-        req.user = user;
-        next();
-    });
+    if (mongoose.Types.ObjectId.isValid(req.params.id)){
+        User.findById(req.params.id).exec(function(err, user) {
+            if (err) {
+                return next(err);
+            } else if (!user) {
+                return res.status(404).send('No person found with ID ' + req.params.id);
+            }
+            req.user = user;
+            next();
+        });
+    }
+    else{
+        return res.status(404).send('USERID INVALID');
+    }
+
 }
 
-function UpdatePerson(req, res, next) {
+function UpdateUser(req, res, next) {
+
     req.user.firstname = req.body.firstname;
-
-
-    req.user.save(function(err, updatedPerson) {
+    req.user.lastname = req.body.lastname;
+    
+    req.user.save(function(err, updatedUser) {
         if (err) { return next(err); }
-        res.send(updatedPerson);
+        res.send(updatedUser);
     });
 }
 
-function RetrievePerson(req, res, next) {
-    // Update req.person here...
-    req.user.save(function(err, updatedPerson) {
-        if (err) { return next(err); }
-        res.send(updatedPerson);
-    });
+function RetrieveUser(req, res, next) {
+    console.log(req.user);
+    res.status(200).json(req.user);
 }
 
 /* POST new user */
@@ -71,7 +76,7 @@ router.get('/', function(req, res, next) {
     });
 });
 
-router.patch('/:id', loadUserFromParams, UpdatePerson);
-router.get('/:id', loadUserFromParams, RetrievePerson);
+router.patch('/:id', loadUserFromParams, UpdateUser);
+router.get('/:id', loadUserFromParams, RetrieveUser);
 
 module.exports = router;
