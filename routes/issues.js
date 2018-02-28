@@ -1,72 +1,93 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user');
+const Issue = require('../models/issue');
 const mongoose = require('mongoose');
 
-function loadUserFromParams(req, res, next) {
+function loadIssueFromParams(req, res, next) {
     if (mongoose.Types.ObjectId.isValid(req.params.id)){
-        User.findById(req.params.id).exec(function(err, user) {
+        Issue.findById(req.params.id).exec(function(err, issue) {
             if (err) {
                 return next(err);
-            } else if (!user) {
+            } else if (!issue) {
                 return res.status(404).send('No person found with ID ' + req.params.id);
             }
-            req.user = user;
+            req.issue = issue;
             next();
         });
     }
     else{
-        return res.status(404).send('USERID INVALID');
+        return res.status(404).send('ISSUEID INVALID');
     }
 
 }
 
-function updateUser(req, res, next) {
+function updateIssue(req, res, next) {
 
-    req.user.firstname = req.body.firstname;
-    req.user.lastname = req.body.lastname;
+    req.issue.name = req.body.name;
+    req.issue.place = req.body.place;
 
-    req.user.save(function(err, updatedUser) {
+    req.issue.save(function(err, updatedIssue) {
         if (err) { return next(err); }
-        res.send(updatedUser);
+        res.send(updatedIssue);
     });
 }
 
-function retrieveUser(req, res, next) {
-    console.log(req.user);
-    res.status(200).json(req.user);
+function retrieveIssue(req, res, next) {
+    console.log(req.issue);
+    res.status(200).json(req.issue);
 }
 
-function deleteUser(req, res, next) {
+function deleteIssue(req, res, next) {
 
-    req.user.remove(function(err) {
+    req.issue.remove(function(err) {
         if (err) { return next(err); }
         res.sendStatus(204);
     });
 }
 
-/* POST new user */
+function retrieveIssuesFromUser(req,res,next) {
+	let query = Issue.find();
+	// Filter issues by user
+	if (Array.isArray(req.query.user)) {
+		// Find all issues created by any of the specified users
+		const users = req.query.user.filter(mongoose.Types.ObjectId.isValid);
+		query = query.where('user.id').in(users);
+	} else if (mongoose.Types.ObjectId.isValid(req.query.user)) {
+		// Find all issues created by a specific users
+		query = query.where('user.id').equals(req.query.user);
+	}
+	// Execute the query
+  	query.exec(function(err, issuesUser) {
+    if (err) {
+      return next(err);
+    }
+    res.send(issuesUser);
+  });
+};
+
+
+/* POST new issue */
 router.post('/', function(req, res, next) {
     // Create a new document from the JSON in the request body
-    const newUser = new User(req.body);
+    const newIssue = new Issue(req.body);
     // Save that document
-    newUser.save(function(err, savedUser) {
+    newIssue.save(function(err, savedIssue) {
         if (err) {
             return next(err);
         }
         // Send the saved document in the response
-        res.send(savedUser);
+        res.send(savedIssue);
     });
 });
 
-/* GET users listing.
+/* GET issues listing.
  router.get('/', function(req, res, next) {
  res.send('respond with a resource');
  });*/
 
-/* GET users listing. */
+/* GET issues listing. */
 /**
- * @api {get} /users/:id Request a user's information
+ * @api {get} /issues/:id Request a issue's information
  * @apiName GetUser
  * @apiGroup User
  *
@@ -75,17 +96,20 @@ router.post('/', function(req, res, next) {
  * @apiSuccess {String} firstName First name of the user
  * @apiSuccess {String} lastName  Last name of the user
  */
-router.get('/', function(req, res, next) {
-    User.find().sort('firstname').exec(function(err, users) {
+/*router.get('/', function(req, res, next) {
+    Issue.find().sort('name').exec(function(err, issues) {
         if (err) {
             return next(err);
         }
-        res.send(users);
+        res.send(issues);
     });
-});
+});*/
 
-router.patch('/:id', loadUserFromParams, updateUser);
-router.get('/:id', loadUserFromParams, retrieveUser);
-router.delete('/:id', loadUserFromParams, deleteUser);
+
+
+router.patch('/:id', loadIssueFromParams, updateIssue);
+router.get('/:id', loadIssueFromParams, retrieveIssue);
+router.get('/',retrieveIssuesFromUser);
+router.delete('/:id', loadIssueFromParams, deleteIssue);
 
 module.exports = router;

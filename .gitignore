@@ -1,3 +1,5 @@
 node_modules
 *.log
 .idea
+docs
+package-lock.json
