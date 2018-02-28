@@ -28,66 +28,42 @@ function updateUser(req, res, next) {
 
     //Vérification du premier nom
 
-    if (req.body.firstname === undefined){
-
-        req.user.firstname = req.user.firstname;
-
-    } else {
+    if (req.body.firstname !== undefined){
 
         req.user.firstname= req.body.firstname;
     }
 
     //Vérification du lastname
 
-    if (req.body.lastname === undefined){
-
-        req.user.lastname = req.user.lastname;
-
-    } else {
+    if (req.body.lastname !== undefined){
 
         req.user.lastname = req.body.lastname;
     }
 
     //Vérification du numéro de téléphone
 
-    if (req.body.tel === undefined){
-
-        req.user.tel = req.user.tel;
-
-    } else {
+    if (req.body.tel !== undefined){
 
         req.user.tel = req.body.tel;
     }
 
     //Vérification de la date de naissance
 
-    if (req.body.birthday === undefined){
-
-        req.user.birthday = req.user.birthday;
-
-    } else {
+    if (req.body.birthday !== undefined){
 
         req.user.birthday = req.body.birthday;
     }
 
     //Vérification du mail
 
-    if (req.body.mail === undefined){
-
-        req.user.mail = req.user.mail;
-
-    } else {
+    if (req.body.mail !== undefined){
 
         req.user.mail = req.body.mail;
     }
 
     //Vérification du genre
 
-    if (req.body.gender === undefined){
-
-        req.user.gender = req.user.gender;
-
-    } else {
+    if (req.body.gender !== undefined){
 
         req.user.gender = req.body.gender;
     }

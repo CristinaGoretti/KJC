@@ -9,8 +9,8 @@ const userSchema = new Schema({
     },
     tel: {
         type: String,
-        minLength: [10, "Tél: Il manque des chiffres!"],
-        maxLength: [13, "Tél: Il y a trop de chiffres"],
+        minlength: [10, "Tél: Il manque des chiffres!"],
+        maxlength: [13, "Tél: Il y a trop de chiffres"],
         required: [true, "Tél: T'as pas de téléphone? Non mais hallo?"]
     },
     birthday: {
