@@ -3,19 +3,28 @@ const Schema = mongoose.Schema;
 // Define the schema for users
 const userSchema = new Schema({
     firstname: String,
-    lastname: String
-    /*tel: {
-        type: Number,
-        length:{
-            min: 10,
-            max: 13
-        }
+    lastname: {
+        type: String,
+        required: [true, "Il faut rentrer un nom de famille."]
     },
-    birthday: Date,
-    mail: String,
+    tel: {
+        type: String,
+        minLength: [10, "Tél: Il manque des chiffres!"],
+        maxLength: [13, "Tél: Il y a trop de chiffres"],
+        required: [true, "Tél: T'as pas de téléphone? Non mais hallo?"]
+    },
+    birthday: {
+        type: Date,
+        required: [true, "Il faut rentrer une date d'anniversaire."]
+    },
+    mail: {
+        type: String,
+        required: [true, "Il faut rentrer une adresse email."]
+    },
     gender: {
-        enum: ['female', 'male']
-    }*/
+        type: String,
+        enum: ["female", "male"]
+    }
 });
 // Create the model from the schema and export it
 module.exports = mongoose.model('User', userSchema);
