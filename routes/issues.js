@@ -10,7 +10,7 @@ function loadIssueFromParams(req, res, next) {
             if (err) {
                 return next(err);
             } else if (!issue) {
-                return res.status(404).send('No person found with ID ' + req.params.id);
+                return res.status(404).send('No issue found with ID ' + req.params.id);
             }
             req.issue = issue;
             next();
@@ -24,8 +24,55 @@ function loadIssueFromParams(req, res, next) {
 
 function updateIssue(req, res, next) {
 
-    req.issue.name = req.body.name;
-    req.issue.place = req.body.place;
+    //Vérification du status
+
+    if(req.body.status !== undefined){
+        if(req.issue.status === "new" && req.body.status === "inProgress"){
+            req.issue.status= req.body.status;
+        }
+        else if((req.issue.status === "new" || req.issue.status === "inProgress") && req.body.status === "canceled"){
+            req.issue.status= req.body.status;
+        }
+        else if(req.issue.status === "inProgress" && req.body.status === "completed"){
+            req.issue.status= req.body.status;
+        }
+        else{
+            const errorStatus = new Error("le passage de statut est mal réalisé");
+            return next(errorStatus);
+        }
+    }
+
+    //Vérification de la description
+
+    if (req.body.description !== undefined){
+
+        req.issue.description = req.body.description;
+    }
+    //Vérification de la image url
+
+    if (req.body.imageUrl !== undefined){
+
+        req.issue.imageUrl = req.body.imageUrl;
+    }
+    //Vérification de la latitude
+
+    if (req.body.latitude !== undefined){
+
+        req.issue.latitude = req.body.latitude;
+    }
+    //Vérification de la longitude
+
+    if (req.body.longitude !== undefined){
+
+        req.issue.longitude = req.body.longitude;
+    }
+    //Vérification de la description
+
+    if (req.body.tags !== undefined){
+
+        req.issue.tags = req.body.tags;
+    }
+    req.issue.updatedAt = Date.now();
 
     req.issue.save(function(err, updatedIssue) {
         if (err) { return next(err); }
