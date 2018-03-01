@@ -105,6 +105,14 @@ function deleteUser(req, res, next) {
 
 /* POST new user */
 router.post('/', function(req, res, next) {
+	//check if user exists in database 
+	
+	var existedUser = User.findOne({
+		   'firstname' : req.body.firstname ,
+		   'lastname': req.body.lastname 
+	});
+	console.log("coucou"+existedUser);
+	
     // Create a new document from the JSON in the request body
     const newUser = new User(req.body);
     // Save that document
