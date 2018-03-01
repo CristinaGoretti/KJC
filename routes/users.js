@@ -4,6 +4,7 @@ const User = require('../models/user');
 const mongoose = require('mongoose');
 
 
+
 function loadUserFromParams(req, res, next) {
     if (mongoose.Types.ObjectId.isValid(req.params.id)){
         User.findById(req.params.id).exec(function(err, user) {
@@ -88,6 +89,19 @@ function deleteUser(req, res, next) {
         res.sendStatus(204);
     });
 }
+
+/* POST user in the database */
+/**
+ * @api {post} /users/:id Request a user's information
+ * @apiName PostUser
+ * @apiGroup User
+ *
+ * @apiParam {Number} id Unique identifier of the user
+ *
+ * @apiError 
+ * @apiSuccess {String} firstName First name of the user
+ * @apiSuccess {String} lastName  Last name of the user
+ */
 
 /* POST new user */
 router.post('/', function(req, res, next) {
