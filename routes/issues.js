@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Issue = require('../models/issue');
 const mongoose = require('mongoose');
+const User = require('../models/user');
 
 function loadIssueFromParams(req, res, next) {
     if (mongoose.Types.ObjectId.isValid(req.params.id)){
@@ -44,7 +45,16 @@ function deleteIssue(req, res, next) {
         res.sendStatus(204);
     });
 }
-
+/**
+ * @api {get} /users/:id Request a user's information
+ * @apiName GetUser
+ * @apiGroup User
+ *
+ * @apiParam {Number} id Unique identifier of the user
+ *
+ * @apiSuccess {String} firstName First name of the user
+ * @apiSuccess {String} lastName  Last name of the user
+ */
 function retrieveIssuesFromUser(req,res,next) {
 	let query = Issue.find();
 	// Filter issues by user
@@ -66,8 +76,21 @@ function retrieveIssuesFromUser(req,res,next) {
 };
 
 
-/* POST new issue */
+/**
+ * @api {post} /users/ Add a new issue
+ * @apiName CreateIssue
+ * @apiGroup Issue
+ *
+ * @apiParam {name} issue's name
+ * @apiParam {place} issue's place where it is
+ * @apiParam {user.id} users' id of whom created the issue
+ *
+ * @apiSuccess {name} issue's name created
+ * @apiParam {place} issue's place created
+ * @apiParam {user.id} users' id of whom created the issue
+ */
 router.post('/', function(req, res, next) {
+    console.log(req);
     // Create a new document from the JSON in the request body
     const newIssue = new Issue(req.body);
     // Save that document
