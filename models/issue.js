@@ -48,6 +48,7 @@ const issueSchema = new Schema({
         default: Date.now
     }
 });
+
 function existUser(value, callback){
     User.findOne({ '_id': value }, function (err, user){
         if(user){
