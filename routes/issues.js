@@ -90,7 +90,6 @@ function retrieveIssuesFromUser(req,res,next) {
  * @apiParam {user.id} users' id of whom created the issue
  */
 router.post('/', function(req, res, next) {
-    console.log(req);
     // Create a new document from the JSON in the request body
     const newIssue = new Issue(req.body);
     // Save that document

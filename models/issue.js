@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = require('../models/user');
 const Schema = mongoose.Schema;
 // Define the schema for users
 const issueSchema = new Schema({
@@ -30,11 +31,13 @@ const issueSchema = new Schema({
         enum: ["new", "inProgress", "canceled", "completed"],
         default: "new"
     },
-    user:{
-        id: {
-            type: String,
-            required: [true, "Il faut rentrer identifiant d'utilisateur."]
-        },
+    user: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        validate: {
+            validator: existUser,
+            isAsync: true
+        }
     },
     createdAt: {
         type: Date,
@@ -45,5 +48,14 @@ const issueSchema = new Schema({
         default: Date.now
     }
 });
+function existUser(value, callback){
+    User.findOne({ '_id': value }, function (err, user){
+        if(user){
+            callback(true);
+        } else {
+            callback(false);
+        }
+    });
+}
 // Create the model from the schema and export it
 module.exports = mongoose.model('Issue', issueSchema);
