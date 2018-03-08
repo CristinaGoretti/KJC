@@ -133,8 +133,8 @@ router.get('/', function(req, res, next) {
  *      "__v": 0
  *    }]
  *
- *
  */
+
 router.get('/', function(req, res, next) {
 
     User.find().count(function(err, total) {

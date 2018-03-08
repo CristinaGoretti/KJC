@@ -93,9 +93,9 @@ function deleteIssue(req, res, next) {
     });
 }
 /**
- * @api {get} /users/:id Request a user's information
- * @apiName GetUser
- * @apiGroup User
+ * @api {get} /issues/:id Request a issue's information
+ * @apiName GetIssue
+ * @apiGroup Issue
  *
  * @apiParam {Number} id Unique identifier of the user
  *
@@ -151,8 +151,8 @@ router.post('/', function(req, res, next) {
 /* GET issues listing. */
 /**
  * @api {get} /issues/:id Request a issue's information
- * @apiName GetUser
- * @apiGroup User
+ * @apiName GetIssue
+ * @apiGroup Issue
  *
  * @apiParam {Number} id Unique identifier of the user
  *
