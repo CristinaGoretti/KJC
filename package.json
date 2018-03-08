@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "apidoc": "apidoc -i routes -o docs",
     "start": "node ./bin/www"
   },
   "dependencies": {
@@ -17,5 +18,8 @@
     "morgan": "~1.9.0",
     "serve-favicon": "~2.4.5",
     "update-json": "^1.0.0"
+  },
+  "devDependencies": {
+    "apidoc": "^0.17.6"
   }
 }

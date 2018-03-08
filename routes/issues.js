@@ -128,13 +128,7 @@ function retrieveIssuesFromUser(req,res,next) {
  * @apiName CreateIssue
  * @apiGroup Issue
  *
- * @apiParam {name} issue's name
- * @apiParam {place} issue's place where it is
- * @apiParam {user.id} users' id of whom created the issue
  *
- * @apiSuccess {name} issue's name created
- * @apiParam {place} issue's place created
- * @apiParam {user.id} users' id of whom created the issue
  */
 router.post('/', function(req, res, next) {
     // Create a new document from the JSON in the request body

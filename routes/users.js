@@ -41,34 +41,19 @@ function updateUser(req, res, next) {
         req.user.lastname = req.body.lastname;
     }
 
-    //Vérification du numéro de téléphone
+    //Vérification du rôle
 
-    if (req.body.tel !== undefined){
+    if (req.body.role !== undefined){
 
-        req.user.tel = req.body.tel;
+        req.user.role = req.body.role;
     }
 
-    //Vérification de la date de naissance
+    //Vérification de la date de création
 
-    if (req.body.birthday !== undefined){
+    if (req.body.createdAt !== undefined){
 
-        req.user.birthday = req.body.birthday;
+        req.user.createdAt = req.body.createdAt;
     }
-
-    //Vérification du mail
-
-    if (req.body.mail !== undefined){
-
-        req.user.mail = req.body.mail;
-    }
-
-    //Vérification du genre
-
-    if (req.body.gender !== undefined){
-
-        req.user.gender = req.body.gender;
-    }
-
 
 
     req.user.save(function(err, updatedUser) {
@@ -98,21 +83,14 @@ function deleteUser(req, res, next) {
  *
  * @apiParam {Number} id Unique identifier of the user
  *
- * @apiError 
  * @apiSuccess {String} firstName First name of the user
  * @apiSuccess {String} lastName  Last name of the user
  */
 
 /* POST new user */
 router.post('/', function(req, res, next) {
-	//check if user exists in database 
-	
-	var existedUser = User.findOne({
-		   'firstname' : req.body.firstname ,
-		   'lastname': req.body.lastname 
-	});
-	console.log("coucou"+existedUser);
-	
+	//check if user exists in database
+
     // Create a new document from the JSON in the request body
     const newUser = new User(req.body);
     // Save that document
@@ -120,6 +98,7 @@ router.post('/', function(req, res, next) {
         if (err) {
             return next(err);
         }
+
         // Send the saved document in the response
         res.send(savedUser);
     });
@@ -140,6 +119,21 @@ router.get('/', function(req, res, next) {
  *
  * @apiSuccess {String} firstName First name of the user
  * @apiSuccess {String} lastName  Last name of the user
+ * @apiSuccess {String} role Role of the user
+ * @apiSuccess {Date} createdAt Date of the user's creation
+ *
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 200 OK
+ *    [{
+ *      "firstname": "Ruby",
+ *      "lastname": "Black",
+ *      "role": "manager",
+ *      "created_at": "2018-03-08T09:52:26.166Z",
+ *      "_id": "5aa107da12bf93588981a2ce"
+ *      "__v": 0
+ *    }]
+ *
+ *
  */
 router.get('/', function(req, res, next) {
 
