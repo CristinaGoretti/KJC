@@ -4,12 +4,14 @@ const User = require('../models/user');
 const mongoose = require('mongoose');
 
 
-
 function loadUserFromParams(req, res, next) {
     if (mongoose.Types.ObjectId.isValid(req.params.id)){
+
         User.findById(req.params.id).exec(function(err, user) {
             if (err) {
+
                 return next(err);
+
             } else if (!user) {
                 return res.status(404).send('No person found with ID ' + req.params.id);
             }
@@ -18,7 +20,8 @@ function loadUserFromParams(req, res, next) {
         });
     }
     else{
-        return res.status(404).send('USERID INVALID');
+
+        return res.status(422).send('USERID INVALID');
     }
 
 }
@@ -55,12 +58,22 @@ function updateUser(req, res, next) {
         req.user.createdAt = req.body.createdAt;
     }
 
-
     req.user.save(function(err, updatedUser) {
-        if (err) { return next(err); }
+        if (err) {
+            //console.log(err);
+
+           /*if (err.name = "ValidatorError") {
+                res.status(204).send("blablabla");
+           }*/
+
+           return next(err);
+        }
+
         res.send(updatedUser);
+
     });
 }
+
 
 function retrieveUser(req, res, next) {
     console.log(req.user);
@@ -77,19 +90,40 @@ function deleteUser(req, res, next) {
 
 /* POST user in the database */
 /**
- * @api {post} /users/:id Request a user's information
+ * @api {post} /users/:id Post a user's information
  * @apiName PostUser
  * @apiGroup User
  *
- * @apiParam {Number} id Unique identifier of the user
+ * @apiParam (Request body) {String{2..20}} firstname The firstname of the user
+ * @apiParam (Request body) {String{2..20}} lastname The lastname of the user
+ * @apiParam (Request body) {String="citizen,manager"} role The user's role
  *
- * @apiSuccess {String} firstName First name of the user
- * @apiSuccess {String} lastName  Last name of the user
+ * @apiSuccess (200) {Number} id Unique identifier of the user
+ * @apiSuccess (200) {String} firstName First name of the user
+ * @apiSuccess (200) {String} lastName  Last name of the user
+ * @apiSuccess (200) {String} role Role of the user
+ * @apiSuccess (200) {Date} createdAt Date of the user's creation
+ *
+ *
+ * @apiSuccessExample {json} Success
+ *    [{
+ *      "firstname": "Ruby",
+ *      "lastname": "Black",
+ *      "role": "manager",
+ *      "created_at": "2018-03-08T09:52:26.166Z",
+ *      "_id": "5aa107da12bf93588981a2ce"
+ *      "__v": 0
+ * }]
+ *
+ * @apiError (400) BadRequest Firstname is not valid
+ * @apiError (400) BadRequest Lastname is not valid
+ * @apiError (400) BadRequest Role is not valid
+ * @apiError (422) Unprocessableentity User not valid
+ *
  */
 
 /* POST new user */
 router.post('/', function(req, res, next) {
-	//check if user exists in database
 
     // Create a new document from the JSON in the request body
     const newUser = new User(req.body);
@@ -100,30 +134,24 @@ router.post('/', function(req, res, next) {
         }
 
         // Send the saved document in the response
-        res.send(savedUser);
+        res.status(200).send(savedUser);
     });
 });
 
-/* GET users listing.
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});*/
 
 /* GET users listing. */
 /**
- * @api {get} /users/:id Request a user's information
- * @apiName GetUser
+ * @api {get} /users Request a list of users
+ * @apiName GetUserList
  * @apiGroup User
  *
- * @apiParam {Number} id Unique identifier of the user
- *
+ * @apiSuccess {Number} id Unique identifier of the user
  * @apiSuccess {String} firstName First name of the user
  * @apiSuccess {String} lastName  Last name of the user
  * @apiSuccess {String} role Role of the user
  * @apiSuccess {Date} createdAt Date of the user's creation
  *
  * @apiSuccessExample {json} Success
- *    HTTP/1.1 200 OK
  *    [{
  *      "firstname": "Ruby",
  *      "lastname": "Black",
@@ -177,8 +205,78 @@ router.get('/', function(req, res, next) {
     });
 });
 
+/**
+ * @api {patch} /users/:id Modify a User
+ * @apiName PatchUser
+ * @apiGroup User
+ *
+ * @apiParam {Number} id Unique identifier of the user
+ *
+ * @apiSuccess {Number} id Unique identifier of the user
+ * @apiSuccess {String} firstName First name of the user
+ * @apiSuccess {String} lastName  Last name of the user
+ * @apiSuccess {String} role Role of the user
+ * @apiSuccess {Date} createdAt Date of the user's creation
+ *
+ * @apiSuccessExample {json} Success
+ *    [{
+ *      "firstname": "Ruby",
+ *      "lastname": "Black",
+ *      "role": "manager",
+ *      "created_at": "2018-03-08T09:52:26.166Z",
+ *      "_id": "5aa107da12bf93588981a2ce"
+ *      "__v": 0
+ *    }]
+ *
+ * @apiError (404) notFound User not found
+ * @apiError (422) Unprocessableentity User not valid
+ *
+ */
+
 router.patch('/:id', loadUserFromParams, updateUser);
+
+/**
+ * @api {get} /users/:id Get a user's information
+ * @apiName GetUser
+ * @apiGroup User
+ *
+ * @apiParam {Number} id Unique identifier of the user
+ *
+ * @apiSuccess {Number} id Unique identifier of the user
+ * @apiSuccess {String} firstName First name of the user
+ * @apiSuccess {String} lastName  Last name of the user
+ * @apiSuccess {String} role Role of the user
+ * @apiSuccess {Date} createdAt Date of the user's creation
+ *
+ * @apiSuccessExample {json} Success
+ *    [{
+ *      "firstname": "Ruby",
+ *      "lastname": "Black",
+ *      "role": "manager",
+ *      "created_at": "2018-03-08T09:52:26.166Z",
+ *      "_id": "5aa107da12bf93588981a2ce"
+ *      "__v": 0
+ *    }]
+ *
+ * @apiError (404) notFound User not found
+ * @apiError (422) Unprocessableentity User not valid
+ */
+
 router.get('/:id', loadUserFromParams, retrieveUser);
+
+/**
+ * @api {delete} /users/:id Delete a User
+ * @apiName DeleteUser
+ * @apiGroup User
+ *
+ * @apiParam {Number} id Unique identifier of the user
+ *
+ * @apiSuccess (204) NoContent User deleted
+ *
+ * @apiError (404) notFound User not found
+ * @apiError (422) Unprocessableentity User not valid
+ */
+
 router.delete('/:id', loadUserFromParams, deleteUser);
 
 
