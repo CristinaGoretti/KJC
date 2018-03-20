@@ -22,6 +22,7 @@ function loadIssueFromParams(req, res, next) {
 
 }
 
+
 function updateIssue(req, res, next) {
 
     //Vérification du status
@@ -92,16 +93,7 @@ function deleteIssue(req, res, next) {
         res.sendStatus(204);
     });
 }
-/**
- * @api {get} /issues/:id Request a issue's information
- * @apiName GetIssue
- * @apiGroup Issue
- *
- * @apiParam {Number} id Unique identifier of the user
- *
- * @apiSuccess {String} firstName First name of the user
- * @apiSuccess {String} lastName  Last name of the user
- */
+
 function retrieveIssuesFromUser(req,res,next) {
 	let query = Issue.find();
 	// Filter issues by user
@@ -122,14 +114,57 @@ function retrieveIssuesFromUser(req,res,next) {
   });
 };
 
-
+/* POST an issue in the database */
 /**
- * @api {post} /users/ Add a new issue
- * @apiName CreateIssue
+ * @api {post} /issues/:id Post a issue's information
+ * @apiName PostIssue
  * @apiGroup Issue
  *
+ * @apiParam (Request body) {String{0..10000}} description The description of the issue
+ * @apiParam (Request body) {String{0..500}} imageUrl The image of the issue
+ * @apiParam (Request body) {Number} latitude The latitude of the issue
+ * @apiParam (Request body) {Number} longitude The longitude of the issue
+ * @apiParam (Request body) {String[]} tags The tags of the issue
+ * @apiParam (Request body) {String="new, inProgress, canceled, completed"} status The issue's status
+ * @apiParam (Request body) {Object} user The issue's user ID
+ *
+ * @apiSuccess (200) {String[]} tags Tags of the issue
+ * @apiSuccess (200) {String} status Status of the issue
+ * @apiSuccess (200) {Date} createdAt Date of the issue's creation
+ * @apiSuccess (200) {Date} updatedAt Date of the issue's update
+ * @apiSuccess (200) {Number} id Id of the issue
+ * @apiSuccess (200) {String} description Description of the issue
+ * @apiSuccess (200) {String} imageUrl Image of the issue
+ * @apiSuccess (200) {Number} latitude Latitude of the issue
+ * @apiSuccess (200) {Number} longitude Longitude of the issue
+ * @apiSuccess (200) {Object} user Id of the user
+ *
+ *
+ * @apiSuccessExample {json} Success
+ *     [{
+*    "tags": [
+*       "blabla",
+*       "blabla"
+*    ],
+*    "status": "new",
+*    "createdAt": "2018-03-20T13:17:51.880Z",
+*    "updatedAt": "2018-03-20T13:17:51.880Z",
+*    "_id": "5ab109ff6c8e0a1ef823bf98",
+*    "description": "Super description de l'issue 1",
+*    "imageUrl": "http:www//jjfjdjdjd.ch",
+*    "latitude": 342,
+*    "longitude": 333,
+*    "user": "5aa14067aaac8f820b443457",
+*    "__v": 0
+*
+*    }]
+ *
+ * @apiError (400) BadRequest Fields are not valid
+ * @apiError (422) Unprocessableentity Issue not valid
  *
  */
+
+
 router.post('/', function(req, res, next) {
     // Create a new document from the JSON in the request body
     const newIssue = new Issue(req.body);
@@ -143,21 +178,43 @@ router.post('/', function(req, res, next) {
     });
 });
 
-/* GET issues listing.
- router.get('/', function(req, res, next) {
- res.send('respond with a resource');
- });*/
 
 /* GET issues listing. */
 /**
- * @api {get} /issues/:id Request a issue's information
- * @apiName GetIssue
+ * @api {get} /issues Request a list of issues
+ * @apiName GetIssueList
  * @apiGroup Issue
  *
- * @apiParam {Number} id Unique identifier of the user
+ * @apiSuccess (200) {Number} id Unique identifier of the Issue
+ * @apiSuccess (200) {String} description description of the issue
+ * @apiSuccess (200) {String} imageUrl image of the issue
+ * @apiSuccess (200) {Number} latitude latitude of the issue
+ * @apiSuccess (200) {Number} longitude longitude of the issue
+ * @apiSuccess (200) {String[]} tags tags of the issue
+ * @apiSuccess (200) {String} status status of the issue
+ * @apiSuccess (200) {Object} user user of the issue
+ * @apiSuccess (200) {Date} createdAt Date of the issue's creation
+ * @apiSuccess (200) {Date} updatedAt Date of the issue's update
  *
- * @apiSuccess {String} firstName First name of the user
- * @apiSuccess {String} lastName  Last name of the user
+ * @apiSuccessExample {json} Success
+ *    [{
+ *    "tags": [
+ *       "blabla",
+ *       "blabla"
+ *    ],
+ *    "status": "new",
+ *    "createdAt": "2018-03-20T13:17:51.880Z",
+ *    "updatedAt": "2018-03-20T13:17:51.880Z",
+ *    "_id": "5ab109ff6c8e0a1ef823bf98",
+ *    "description": "Super description de l'issue 1",
+ *    "imageUrl": "http:www//jjfjdjdjd.ch",
+ *    "latitude": 342,
+ *    "longitude": 333,
+ *    "user": "5aa14067aaac8f820b443457",
+ *    "__v": 0
+ *
+ *    }]
+ *
  */
 
 router.get('/', function(req, res, next) {
@@ -206,9 +263,108 @@ router.get('/', function(req, res, next) {
 
 
 
+/**
+ * @api {patch} /issues/:id Modify an Issue
+ * @apiName PatchIssue
+ * @apiGroup Issue
+ *
+ * @apiParam {Number} id Unique identifier of the Issue
+ *
+ * @apiSuccess (200) {Number} id Unique identifier of the Issue
+ * @apiSuccess (200) {String} description description of the issue
+ * @apiSuccess (200) {String} imageUrl image of the issue
+ * @apiSuccess (200) {Number} latitude latitude of the issue
+ * @apiSuccess (200) {Number} longitude longitude of the issue
+ * @apiSuccess (200) {String[]} tags tags of the issue
+ * @apiSuccess (200) {String} status status of the issue
+ * @apiSuccess (200) {Object} user user of the issue
+ * @apiSuccess (200) {Date} createdAt Date of the issue's creation
+ * @apiSuccess (200) {Date} updatedAt Date of the issue's update
+ *
+ * @apiSuccessExample {json} Success
+ *    [{
+ *    "tags": [
+ *       "blabla",
+ *       "blabla"
+ *    ],
+ *    "status": "new",
+ *    "createdAt": "2018-03-20T13:17:51.880Z",
+ *    "updatedAt": "2018-03-20T13:17:51.880Z",
+ *    "_id": "5ab109ff6c8e0a1ef823bf98",
+ *    "description": "Super description de l'issue 1",
+ *    "imageUrl": "http:www//jjfjdjdjd.ch",
+ *    "latitude": 342,
+ *    "longitude": 333,
+ *    "user": "5aa14067aaac8f820b443457",
+ *    "__v": 0
+ *
+ *    }]
+ *
+ * @apiError (404) notFound Issue not found
+ * @apiError (422) Unprocessableentity Issue not valid
+ *
+ */
+
 router.patch('/:id', loadIssueFromParams, updateIssue);
+
+/**
+ * @api {get} /issues/:id Get a issue's information
+ * @apiName GetIssue
+ * @apiGroup Issue
+ *
+ * @apiParam {Number} id Unique identifier of the issue
+ *
+ * @apiSuccess (200) {Number} id Unique identifier of the Issue
+ * @apiSuccess (200) {String} description description of the issue
+ * @apiSuccess (200) {String} imageUrl image of the issue
+ * @apiSuccess (200) {Number} latitude latitude of the issue
+ * @apiSuccess (200) {Number} longitude longitude of the issue
+ * @apiSuccess (200) {String[]} tags tags of the issue
+ * @apiSuccess (200) {String} status status of the issue
+ * @apiSuccess (200) {Object} user user of the issue
+ * @apiSuccess (200) {Date} createdAt Date of the issue's creation
+ * @apiSuccess (200) {Date} updatedAt Date of the issue's update
+ *
+ * @apiSuccessExample {json} Success
+ *    [{
+ *    "tags": [
+ *       "blabla",
+ *       "blabla"
+ *    ],
+ *    "status": "new",
+ *    "createdAt": "2018-03-20T13:17:51.880Z",
+ *    "updatedAt": "2018-03-20T13:17:51.880Z",
+ *    "_id": "5ab109ff6c8e0a1ef823bf98",
+ *    "description": "Super description de l'issue 1",
+ *    "imageUrl": "http:www//jjfjdjdjd.ch",
+ *    "latitude": 342,
+ *    "longitude": 333,
+ *    "user": "5aa14067aaac8f820b443457",
+ *    "__v": 0
+ *
+ *    }]
+ *
+ * @apiError (404) notFound Issue not found
+ * @apiError (422) Unprocessableentity Issue not valid
+ */
+
 router.get('/:id', loadIssueFromParams, retrieveIssue);
+
 router.get('/',retrieveIssuesFromUser);
+
+/**
+ * @api {delete} /issues/:id Delete an Issue
+ * @apiName DeleteIssue
+ * @apiGroup Issue
+ *
+ * @apiParam {Number} id Unique identifier of the issue
+ *
+ * @apiSuccess (204) NoContent Issue deleted
+ *
+ * @apiError (404) notFound Issue not found
+ * @apiError (422) Unprocessableentity Issue not valid
+ */
+
 router.delete('/:id', loadIssueFromParams, deleteIssue);
 
 module.exports = router;
