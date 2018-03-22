@@ -90,7 +90,7 @@ function deleteUser(req, res, next) {
 
 /* POST user in the database */
 /**
- * @api {post} /users/:id Post a user's information
+ * @api {post} /users Post a user's information
  * @apiName PostUser
  * @apiGroup User
  *

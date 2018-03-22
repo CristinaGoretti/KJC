@@ -353,7 +353,7 @@ router.patch('/:id', loadIssueFromParams, updateIssue);
 router.get('/:id', loadIssueFromParams, retrieveIssue);
 
 /**
- * @api {get} /issues/:id Retrieve Issues from an User
+ * @api {get} /issues Retrieve Issues from an User
  * @apiName RetrieveIssuesFromUsers
  * @apiGroup Issue
  *
