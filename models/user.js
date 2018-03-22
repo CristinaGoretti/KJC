@@ -4,14 +4,14 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
     firstname: {
 		type : String,
-		minLength : 2,
-		maxLength : 20,
+		minlength: [2, "Description: min 2 caractères"],
+		maxlength: [20, "Description: max 20 caractères"],		
 		required: [true, "Il faut entrer un prénom."]
 	},
     lastname: {
         type: String,
-		minLength : 2,
-		maxLength : 20,
+		minlength: [2, "Description: min 2 caractères"],
+		maxlength: [20, "Description: max 20 caractères"],
         required: [true, "Il faut entrer un nom de famille."]
     },
     role: {
