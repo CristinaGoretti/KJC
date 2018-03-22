@@ -94,6 +94,8 @@ function deleteIssue(req, res, next) {
     });
 }
 
+
+
 function retrieveIssuesFromUser(req,res,next) {
 	let query = Issue.find();
 	// Filter issues by user
@@ -349,6 +351,50 @@ router.patch('/:id', loadIssueFromParams, updateIssue);
  */
 
 router.get('/:id', loadIssueFromParams, retrieveIssue);
+
+/**
+ * @api {get} /issues/:id Retrieve Issues from an User
+ * @apiName RetrieveIssuesFromUsers
+ * @apiGroup Issue
+ *
+ * @apiParam {Number} id Unique identifier of the issue
+ * @apiParam {ObjectID} [userId] The ID of the user who create the issue to retrieve
+ *
+ * @apiSuccess (200) {Number} id Unique identifier of the Issue
+ * @apiSuccess (200) {String} description description of the issue
+ * @apiSuccess (200) {String} imageUrl image of the issue
+ * @apiSuccess (200) {Number} latitude latitude of the issue
+ * @apiSuccess (200) {Number} longitude longitude of the issue
+ * @apiSuccess (200) {String[]} tags tags of the issue
+ * @apiSuccess (200) {String} status status of the issue
+ * @apiSuccess (200) {Object} user user of the issue
+ * @apiSuccess (200) {Date} createdAt Date of the issue's creation
+ * @apiSuccess (200) {Date} updatedAt Date of the issue's update
+ *
+ * @apiSuccessExample {json} Success
+ *    [{
+ *    "tags": [
+ *       "blabla",
+ *       "blabla"
+ *    ],
+ *    "status": "new",
+ *    "createdAt": "2018-03-20T13:17:51.880Z",
+ *    "updatedAt": "2018-03-20T13:17:51.880Z",
+ *    "_id": "5ab109ff6c8e0a1ef823bf98",
+ *    "description": "Super description de l'issue 1",
+ *    "imageUrl": "http:www//jjfjdjdjd.ch",
+ *    "latitude": 342,
+ *    "longitude": 333,
+ *    "user": "5aa14067aaac8f820b443457",
+ *    "__v": 0
+ *
+ *    }]
+ *
+ * @apiError (404) notFound Issue not found
+ * @apiError (422) Unprocessableentity Issue not valid
+ *
+ */
+
 
 router.get('/',retrieveIssuesFromUser);
 
