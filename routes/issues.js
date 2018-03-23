@@ -170,6 +170,9 @@ function retrieveIssuesFromUser(req,res,next) {
 router.post('/', function(req, res, next) {
     // Create a new document from the JSON in the request body
     const newIssue = new Issue(req.body);
+    if(newIssue.status != 'new'){
+        newIssue.status = 'new';
+    }
     // Save that document
     newIssue.save(function(err, savedIssue) {
         if (err) {
