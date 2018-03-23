@@ -100,13 +100,13 @@ function retrieveIssuesFromUser(req,res,next) {
     let query = Issue.find();
 
 	// Filter issues by user
-	if (Array.isArray(req.params.userId)) {
+	if (Array.isArray(req.params.id)) {
 		// Find all issues created by any of the specified users
-        const users = req.params.userId.filter(mongoose.Types.ObjectId.isValid);
+        const users = req.params.id.filter(mongoose.Types.ObjectId.isValid);
 		query = query.where('user').in(users);
-	} else if (mongoose.Types.ObjectId.isValid(req.params.userId)) {
+	} else if (mongoose.Types.ObjectId.isValid(req.params.id)) {
 		// Find all issues created by a specific users
-		query = query.where('user').equals(req.params.userId);
+		query = query.where('user').equals(req.params.id);
 	}
 	// Execute the query
   	query.exec(function(err, issuesUser) {
@@ -361,7 +361,7 @@ router.patch('/:id', loadIssueFromParams, updateIssue);
 router.get('/:id', loadIssueFromParams, retrieveIssue);
 
 /**
- * @api {get} /issues/searches/:userId Retrieve Issues from an User
+ * @api {get} /issues/searches/:id Retrieve Issues from an User
  * @apiName RetrieveIssuesFromUsers
  * @apiGroup Issue
  *
@@ -403,7 +403,7 @@ router.get('/:id', loadIssueFromParams, retrieveIssue);
  */
 
 
-router.get('/user/:userId',retrieveIssuesFromUser);
+router.get('/user/:id',retrieveIssuesFromUser);
 
 /**
  * @api {delete} /issues/:id Delete an Issue
