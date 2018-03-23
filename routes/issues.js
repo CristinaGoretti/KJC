@@ -97,15 +97,16 @@ function deleteIssue(req, res, next) {
 
 
 function retrieveIssuesFromUser(req,res,next) {
-	let query = Issue.find();
+    let query = Issue.find();
+
 	// Filter issues by user
-	if (Array.isArray(req.query.user)) {
+	if (Array.isArray(req.params.userId)) {
 		// Find all issues created by any of the specified users
-		const users = req.query.user.filter(mongoose.Types.ObjectId.isValid);
-		query = query.where('user.id').in(users);
-	} else if (mongoose.Types.ObjectId.isValid(req.query.user)) {
+        const users = req.params.userId.filter(mongoose.Types.ObjectId.isValid);
+		query = query.where('user').in(users);
+	} else if (mongoose.Types.ObjectId.isValid(req.params.userId)) {
 		// Find all issues created by a specific users
-		query = query.where('user.id').equals(req.query.user);
+		query = query.where('user').equals(req.params.userId);
 	}
 	// Execute the query
   	query.exec(function(err, issuesUser) {
@@ -114,6 +115,7 @@ function retrieveIssuesFromUser(req,res,next) {
     }
     res.send(issuesUser);
   });
+
 };
 
 /* POST an issue in the database */
@@ -233,6 +235,9 @@ router.get('/', function(req, res, next) {
         console.log(total);
 
         let query = Issue.find();
+
+
+
         // Parse the "page" param (default to 1 if invalid)
         let page = parseInt(req.query.page, 10);
         if (isNaN(page) || page < 1) {
@@ -356,12 +361,11 @@ router.patch('/:id', loadIssueFromParams, updateIssue);
 router.get('/:id', loadIssueFromParams, retrieveIssue);
 
 /**
- * @api {get} /issues Retrieve Issues from an User
+ * @api {get} /issues/searches/:userId Retrieve Issues from an User
  * @apiName RetrieveIssuesFromUsers
  * @apiGroup Issue
  *
- * @apiParam {Number} id Unique identifier of the issue
- * @apiParam {ObjectID} [userId] The ID of the user who create the issue to retrieve
+ * @apiParam {Number} id Unique identifier of the User
  *
  * @apiSuccess (200) {Number} id Unique identifier of the Issue
  * @apiSuccess (200) {String} description description of the issue
@@ -399,7 +403,7 @@ router.get('/:id', loadIssueFromParams, retrieveIssue);
  */
 
 
-router.get('/',retrieveIssuesFromUser);
+router.get('/user/:userId',retrieveIssuesFromUser);
 
 /**
  * @api {delete} /issues/:id Delete an Issue
